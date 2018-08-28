@@ -38,8 +38,11 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
 
+    #third apps:
+    'rest_framework',
+
     # add new app here:
-    'apps.books'
+    'apps.books',
 ]
 
 MIDDLEWARE = [
@@ -57,7 +60,9 @@ ROOT_URLCONF = 'oilbook.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [
+            os.path.join(BASE_DIR, 'templates')
+        ],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [

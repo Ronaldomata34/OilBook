@@ -1,0 +1,123 @@
+{% extends '../base.html' %}
+
+{% block content %}
+    <div id="app">
+      <div class="container">
+        <div class="row">
+          <h1>List of Books
+          <button class="btn btn-success">ADD BOOK</button>
+          </h1>
+          <table class="table">
+            <thead>
+              <tr>
+                <th scope="col">#</th>
+                <th scope="col">Heading</th>
+                <th scope="col">Action</th>
+              </tr>
+            </thead>
+            <tbody>
+            	${loading}
+              <tr v-for="book in books">
+                <th scope="row"> ${book.title} </th>
+                <td>${book.author} </td>
+                <td>
+                  <button class="btn btn-info" v-on:click="getBook(book.id)">Edit</button>
+                  <button class="btn btn-danger" v-on:click="deleteBook(book.id)">Delete</button>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+      <div class="loading" v-if="loading===true">Loading&#8230;</div>
+    </div>
+{% endblock %}
+
+{% block vuecode %}
+	<script>
+ 	var app = new Vue({
+   		el: "#app",
+   		delimiters: ["${","}"],
+   		data: {
+   			books: [],
+   			loading: false,
+   			currentBook: {},
+   			message: null,
+   			newBook: {
+   				"title": null,
+   				"author": null,
+   				"url": null,
+   				"subject": null
+   			},
+   		mounted: function() {
+   			console.log("hi")
+   			this.getBooks();
+   			},
+   		},
+   		methods: {
+			getBooks: function() {
+  				this.loading = true;
+  				this.$http.get("/api/v1/books/")
+      			.then((response) => {
+        			this.books = response.data;
+        			this.loading = false;
+      			})
+      			.catch((err) => {
+       				this.loading = false;
+       				console.log(err);
+      			})
+
+   			},
+   			getBook: function(id) {
+   				this.loading = true;
+   				this.$http.get(`/api/v1/books/${id}/`)
+   					.then((response) => {
+   						this.currentBook = response.data;
+   						this.loading = false;
+   					})
+   					.catch((err) => {
+   						this.loading = false;
+   						console.log(err);
+   					})
+   			},
+   			addBook: function() {
+   				this.loading = true;
+   				this.$http.post("/api/v1/books/", this.newBook)
+   					.then((response) => {
+   						this.loading = false;
+   						this.getBook();
+   					})
+   					.catch((err) => {
+   						this.loading = false;
+   						console.log(err);
+   					})
+   			},
+   			updateBook: function() {
+   				this.loading = true;
+   				this.$http.put(`/api/v1/books/${this.currentBook.id}/`, this.currentBook)
+   					.then((response) => {
+   						this.loading = false;
+   						this.currentBook = response.data;
+   						this.getBook();
+   					})
+   					.catch((err) => {
+   						this.loading = false;
+   						console.log(err);
+   					})
+   			},
+   			deleteBook: function() {
+   				this.loading = true;
+   				this.$http.delete(`api/v1/books/${id}/`)
+   					.then((response) => {
+   						this.loading = false;
+   						this.getBook();
+   					})
+   					.catch((err) => {
+   						this.loading = false;
+   						console.log(err)
+   					})
+   			}
+   		}
+ 	});
+ </script>
+{% endblock vuecode %}
