@@ -49,10 +49,6 @@
    				"url": null,
    				"subject": null
    			},
-   		mounted: function() {
-   			console.log("hi")
-   			this.getBooks();
-   			},
    		},
    		methods: {
 			getBooks: function() {
@@ -117,7 +113,11 @@
    						console.log(err)
    					})
    			}
-   		}
+   		},
+   		mounted: function() {
+   			console.log("hi")
+   			this.getBooks();
+   		},
  	});
  </script>
 {% endblock vuecode %}
